@@ -20,7 +20,7 @@ jobs:
 
     - name: Deploy to Production
       run: |
-        ssh -o StrictHostKeyChecking=no "web1@y161.35.133.86"
+        ssh -o StrictHostKeyChecking=no "web1@161.35.133.86"
         cd /home/dev1/prod &&
         git pull origin main &&
         ./deploy.sh
