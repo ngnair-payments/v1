@@ -1,5 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { IsEmail, IsNotEmpty, IsString, IsPhoneNumber, IsUUID } from 'class-validator';
+// src/users/entities/user.entity.ts
+
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import { IsEmail, IsNotEmpty, IsString, IsPhoneNumber } from 'class-validator';
+import { Permission } from '../../permissions/entities/permission.entity';
+
 
 @Entity('users')
 export class User {
@@ -36,5 +40,8 @@ export class User {
 
   @Column()
   password: string;
+
+  @ManyToMany(() => Permission, permission => permission.users)
+  permissions: Permission[];
 
 }

@@ -36,8 +36,29 @@ export class CreateMerchantDto {
   postal_code: string;
 
   @IsString()
-  application_id: string;
+  acquirerId?: string;
 
   @IsString()
-  gateway_id: string;
+  acquirerName?: string;
+
+  @IsString()
+  acquirerAccountId?: string;
+
+  @IsString()
+  processorId?: string;
+
+  @IsString()
+  processorName?: string;
+
+  @IsString()
+  processorAccountId?: string;
+
+  @IsString()
+  achId?: string;
+
+  @IsString()
+  achName?: string;
+
+  @IsString()
+  achAccountId?: string;
 }

@@ -7,7 +7,7 @@ async function bootstrap() {
 
 // Enable CORS
   app.enableCors({
-    origin: 'https://app.ngnair.com', // Replace with your frontend URL
+    origin: 'https://app.ngnair.com', // Allowed Sources
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });

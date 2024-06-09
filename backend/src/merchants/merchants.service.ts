@@ -6,24 +6,36 @@ import { Merchant } from './entities/merchant.entity';
 import { CreateMerchantDto } from './dto/create-merchant.dto';
 import { UpdateMerchantDto } from './dto/update-merchant.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { Provider } from '../providers/entities/provider.entity';
 
 @Injectable()
 export class MerchantsService {
   constructor(
     @InjectRepository(Merchant)
     private readonly merchantsRepository: Repository<Merchant>,
+    @InjectRepository(Provider)
+    private readonly providerRepository: Repository<Provider>,
   ) {}
 
   async create(createMerchantDto: CreateMerchantDto): Promise<Merchant> {
+    const { acquirerId, processorId, achId } = createMerchantDto;
+
+    const acquirer = acquirerId ? await this.providerRepository.findOne({ where: { id: acquirerId } }) : null;;
+    const processor = processorId ? await this.providerRepository.findOne({ where: { id: processorId } }) : null;
+    const ach = achId ? await this.providerRepository.findOne({ where: { id: achId } }) : null;
+    
     const merchant = this.merchantsRepository.create ({
          id: uuidv4(),
      ...createMerchantDto,
+      acquirer,
+      processor,
+      ach,
    });
     return this.merchantsRepository.save(merchant);
   }
 
   async update(id: string, updateMerchantDto: UpdateMerchantDto): Promise<Merchant> {
-    const merchant = await this.merchantsRepository.findOneBy({ id });
+    const merchant = await this.merchantsRepository.findOne({ where: { id } });
 
     if (!merchant) {
       throw new BadRequestException('Merchant not found');
@@ -42,6 +54,16 @@ export class MerchantsService {
       throw new BadRequestException('EIN cannot be removed');
     }
 
+    const { acquirerId, processorId, achId } = updateMerchantDto;
+
+    const acquirer = acquirerId ? await this.providerRepository.findOne({ where: { id: acquirerId } }) : null;
+    const processor = processorId ? await this.providerRepository.findOne({ where: { id: processorId } }) : null;
+    const ach = achId ? await this.providerRepository.findOne({ where: { id: achId } }) : null;
+
+    if (acquirer) merchant.acquirer = acquirer;
+    if (processor) merchant.processor = processor;
+    if (ach) merchant.ach = ach;
+
     // Apply the update
     Object.assign(merchant, updateMerchantDto);
 
@@ -49,14 +71,17 @@ export class MerchantsService {
   }
 
   async findAll(): Promise<Merchant[]> {
-    return this.merchantsRepository.find();
+    return this.merchantsRepository.find({ relations: ['acquirer', 'processor', 'ach', 'permissions'] });
   }
 
   async findOne(id: string): Promise<Merchant> {
-    return this.merchantsRepository.findOneBy({ id });
+    return this.merchantsRepository.findOne({ where: { id }, relations: ['acquirer', 'processor', 'ach', 'permissions'] });
   }
-
+  
   async remove(id: string): Promise<void> {
-    await this.merchantsRepository.delete(id);
+    const result = await this.merchantsRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Merchant with ID ${id} not found`);
+    }
   }
 }

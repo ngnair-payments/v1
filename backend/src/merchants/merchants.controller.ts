@@ -6,34 +6,30 @@ import { UpdateMerchantDto } from './dto/update-merchant.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('v1/merchants')
+@UseGuards(JwtAuthGuard)
 export class MerchantsController {
   constructor(private readonly merchantsService: MerchantsService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createMerchantDto: CreateMerchantDto) {
     return this.merchantsService.create(createMerchantDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMerchantDto: UpdateMerchantDto) {
     return this.merchantsService.update(id, updateMerchantDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('list')
   findAll() {
     return this.merchantsService.findAll();
   }
  
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.merchantsService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.merchantsService.remove(id);

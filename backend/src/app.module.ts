@@ -1,9 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit  } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Connection } from 'typeorm';
 import { UsersModule } from './users/users.module';
 import { MerchantsModule } from './merchants/merchants.module';
 import { AuthModule } from './auth/auth.module';
+import { ProvidersModule } from './providers/providers.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -25,9 +28,18 @@ import { AuthModule } from './auth/auth.module';
     }),
     inject: [ConfigService],
     }),
-   UsersModule, // Example module
+   UsersModule,
    MerchantsModule, 
    AuthModule,
+   ProvidersModule,
+   TransactionsModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit{
+  constructor(private connection: Connection) {
+}
+
+async onModuleInit() {
+  await this.connection.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+}
+}

@@ -9,6 +9,9 @@ RUN npm install -g npm@10.8.1 uuid -g @nestjs/jwt -g @nestjs/passport -g passpor
 # Install Nest CLI globally
 RUN npm install -g @nestjs/cli
 
+# Install for Dev Env Testing
+RUN npm install --save-dev jest @types/jest ts-jest @nestjs/testing
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
@@ -23,4 +26,4 @@ RUN npm run build
 
 EXPOSE 3009
 
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "start:dev"]

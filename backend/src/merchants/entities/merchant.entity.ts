@@ -1,6 +1,8 @@
 // src/merchants/merchant.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { IsNotEmpty, IsEmail, IsString,IsPhoneNumber, IsNumber, IsUUID } from 'class-validator';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { Provider } from '../../providers/entities/provider.entity';
+import { Permission } from '../../permissions/entities/permission.entity';
 
 @Entity('merchants')
 export class Merchant {
@@ -42,11 +44,37 @@ export class Merchant {
   @IsString()
   postal_code: string;
 
-  @Column()
-  @IsString()
-  application_id: string;
+  @ManyToMany(() => Permission, permission => permission.merchants)
+  @JoinTable()
+  permissions: Permission[];
 
-  @Column()
-  @IsString()
-  gateway_id: string;
+  @ManyToOne(() => Provider)
+  @JoinColumn({ name: 'acquirerId' })
+  acquirer: Provider;
+
+  @Column({ nullable: true })
+  acquirerName: string;
+
+  @Column({ nullable: true })
+  acquirerAccountId: string;
+
+  @ManyToOne(() => Provider)
+  @JoinColumn({ name: 'processorId' })
+  processor: Provider;
+
+  @Column({ nullable: true })
+  processorName: string;
+
+  @Column({ nullable: true })
+  processorAccountId: string;
+
+  @ManyToOne(() => Provider)
+  @JoinColumn({ name: 'achId' })
+  ach: Provider;
+
+  @Column({ nullable: true })
+  achName: string;
+
+  @Column({ nullable: true })
+  achAccountId: string;
 }

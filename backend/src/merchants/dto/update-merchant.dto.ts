@@ -42,10 +42,29 @@ export class UpdateMerchantDto {
   postal_code?: string;
 
   @IsString()
-  @IsOptional()
-  application_id?: string;
+  acquirerId?: string;
 
   @IsString()
-  @IsOptional()
-  gateway_id?: string;
+  acquirerName?: string;
+
+  @IsString()
+  acquirerAccountId?: string;
+
+  @IsString()
+  processorId?: string;
+
+  @IsString()
+  processorName?: string;
+
+  @IsString()
+  processorAccountId?: string;
+
+  @IsString()
+  achId?: string;
+
+  @IsString()
+  achName?: string;
+
+  @IsString()
+  achAccountId?: string;
 }
